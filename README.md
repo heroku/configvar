@@ -113,7 +113,9 @@ accessed.
 
 The configuration object can be reloaded at any time from a `Hash` containing
 environment variables.  For example, it's easy to load values from a file if
-desired.
+desired.  `ConfigVar.define` will always initialize the `config` object from
+the environment, so you must define required variables before attempting to
+load from a file.
 
 ```ruby
 config = ConfigVar.define do
