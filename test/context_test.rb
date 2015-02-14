@@ -176,4 +176,14 @@ class ContextTest < Minitest::Test
     assert_equal('Bob', context[:name])
     assert_equal(42, context[:age])
   end
+
+  # Context.reload reinitialized loaded values from the provided environment.
+  def test_reload
+    context = ConfigVar::Context.new
+    context.optional_int :port, 8080
+    context.reload('PORT' => '8081')
+    assert_equal(8081, context[:port])
+    context.reload('PORT' => '9000')
+    assert_equal(9000, context[:port])
+  end
 end
