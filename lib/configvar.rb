@@ -15,7 +15,7 @@ module ConfigVar
   #     required_bool    :enabled
   #     optional_string  :name,         'Bob'
   #     optional_int     :age,          42
-  #     optional_bool    :balding,      true
+  #     optional_bool    :friendly,     true
   #   end
   def self.define(&blk)
     context = ConfigVar::Context.new
