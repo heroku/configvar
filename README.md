@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/heroku/configvar.png?branch=master)](https://travis-ci.org/heroku/configvar)
+[![Build Status](https://magnum.travis-ci.com/heroku/configvar.svg?token=uNxDxTYyzRaxPpJGQ5yq)](https://magnum.travis-ci.com/heroku/configvar)
 
 # ConfigVar
 
