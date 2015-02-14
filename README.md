@@ -1,5 +1,8 @@
-`ConfigVar` is a Ruby library for managing configuration values loaded from
-the environment.
+[![Build Status](https://travis-ci.org/heroku/configvar.png?branch=master)](https://travis-ci.org/heroku/configvar)
+
+# ConfigVar
+
+Manage configuration values loaded from the environment.
 
 ## Usage
 
