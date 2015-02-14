@@ -181,7 +181,7 @@ class ContextTest < Minitest::Test
   end
 
   # Context.reload makes all values returned from the custom block used to
-  # process a optional value available via the collection interface.
+  # process an optional value available via the collection interface.
   def test_reload_optional_custom
     context = ConfigVar::Context.new
     context.optional_custom :name do |env|
