@@ -11,7 +11,7 @@ environment.
 Required variables can be defined for string, integer and boolean values.
 When the configuration is initialized from the environment a
 `ConfigVar::MissingConfig` exception is raised if a required variable isn't
-defined in the environment.
+defined.
 
 ```ruby
 config = ConfigVar.define do
@@ -22,9 +22,9 @@ end
 ```
 
 With these definitions the environment must contain valid `DATABASE_URL`,
-`PORT` and `ENABLED` key/value pairs.  If the values are not valid for the
-given type an `ArgumentError` exception is raised.  Boolean values are case
-insensitive and may be `0` or `false` for false and `1` or `true` for true.
+`PORT` and `ENABLED` variables.  If any value is invalid an `ArgumentError`
+exception is raised.  Boolean values are case insensitive and may be `0` or
+`false` for false and `1` or `true` for true.
 
 ### Optional variables
 
