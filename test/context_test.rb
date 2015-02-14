@@ -16,12 +16,12 @@ class ContextTest < Minitest::Test
     assert_equal('postgres:///test', context[:database_url])
   end
 
-  # Context.reload raises a MissingConfig if no value is provided for a
+  # Context.reload raises a RequiredConfigError if no value is provided for a
   # required string value.
   def test_reload_required_string_without_value
     context = ConfigVar::Context.new
     context.required_string :database_url
-    assert_raises ConfigVar::MissingConfig do
+    assert_raises ConfigVar::RequiredConfigError do
       context.reload({})
     end
   end
@@ -44,12 +44,12 @@ class ContextTest < Minitest::Test
     end
   end
 
-  # Context.reload raises a MissingConfig if no value is provided for a
+  # Context.reload raises a RequiredConfigError if no value is provided for a
   # required integer value.
   def test_reload_required_int_without_value
     context = ConfigVar::Context.new
     context.required_int :port
-    assert_raises ConfigVar::MissingConfig do
+    assert_raises ConfigVar::RequiredConfigError do
       context.reload({})
     end
   end
@@ -80,12 +80,12 @@ class ContextTest < Minitest::Test
     end
   end
 
-  # Context.reload raises a MissingConfig if no value is provided for a
+  # Context.reload raises a RequiredConfigError if no value is provided for a
   # required boolean value.
   def test_reload_required_bool_without_value
     context = ConfigVar::Context.new
     context.required_bool :value
-    assert_raises ConfigVar::MissingConfig do
+    assert_raises ConfigVar::RequiredConfigError do
       context.reload({})
     end
   end

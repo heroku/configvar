@@ -30,7 +30,7 @@ module ConfigVar
         if value = env[name.to_s.upcase]
           {name => value}
         else
-          raise MissingConfig.new(name)
+          raise RequiredConfigError.new(name)
         end
       end
     end
@@ -41,7 +41,7 @@ module ConfigVar
         if value = env[name.to_s.upcase]
           {name => parse_int(value)}
         else
-          raise MissingConfig.new(name)
+          raise RequiredConfigError.new(name)
         end
       end
     end
@@ -52,7 +52,7 @@ module ConfigVar
         if value = env[name.to_s.upcase]
           {name => parse_bool(value)}
         else
-          raise MissingConfig.new(name)
+          raise RequiredConfigError.new(name)
         end
       end
     end
@@ -61,7 +61,7 @@ module ConfigVar
     # environment as a parameter, load and process values from the it, and
     # return a hash that will be merged into the collection of all config
     # vars.  If a required value is not found in the environment the block
-    # must raise a ConfigVar::MissingConfig exception.
+    # must raise a ConfigVar::RequiredConfigError exception.
     def required_custom(name, &blk)
       @definitions[name] = blk
     end

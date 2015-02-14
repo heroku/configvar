@@ -13,8 +13,8 @@ environment.
 
 Required variables can be defined for string, integer and boolean values.
 When the configuration is initialized from the environment a
-`ConfigVar::MissingConfig` exception is raised if a required variable isn't
-defined.
+`ConfigVar::RequiredConfigError` exception is raised if a required variable
+isn't defined.
 
 ```ruby
 config = ConfigVar.define do
@@ -54,8 +54,8 @@ needs.  For example, if you want to load a required integer that must always
 be 0 or greater you can provide a custom block to do the required validation.
 It must take the environment to load values from and return a `Hash` of values
 to include in the loaded configuration.  The block should raise a
-`ConfigVar::MissingConfig` or `ArgumentError` exception if a required value is
-missing or if any loaded value is invalid, respectively.
+`ConfigVar::RequiredConfigError` or `ArgumentError` exception if a required
+value is missing or if any loaded value is invalid, respectively.
 
 ```ruby
 config = ConfigVar.define do
@@ -67,7 +67,7 @@ config = ConfigVar.define do
       end
       {age: value}
     else
-      raise MissingConfig.new(name)
+      raise RequiredConfigError.new(name)
     end
   end
 end
