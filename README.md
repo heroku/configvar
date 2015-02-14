@@ -88,7 +88,7 @@ config = ConfigVar.define do
 end
 ```
 
-## Accessing config variables
+## Accessing configuration variables
 
 The configuration object returned by `ConfigVar.define` exposes a basic
 collection interface for accessing variables loaded from the environment,
@@ -108,3 +108,20 @@ enabled = config[:enabled]
 
 A `NameError` exception is raised if an unknown configuration variable is
 accessed.
+
+## Reload configuration variables
+
+The configuration object can be reloaded at any time from a `Hash` containing
+environment variables.  For example, it's easy to load values from a file if
+desired.
+
+```ruby
+config = ConfigVar.define do
+  required_string  :database_url
+  required_int     :port
+  required_bool    :enabled
+end
+
+env = load_values_from_file('my.config')
+config.reload(env)
+```
