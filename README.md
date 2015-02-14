@@ -62,7 +62,7 @@ config = ConfigVar.define do
       if value < 0
         raise ArgumentError.new("#{value} for AGE must be a 0 or greater")
       end
-      {name => Integer(value)}
+      {age: value}
     else
       raise MissingConfig.new(name)
     end
