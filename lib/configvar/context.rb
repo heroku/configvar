@@ -1,29 +1,27 @@
 module ConfigVar
   class Context
     def initialize
-      @required = {}
-      @optional = {}
+      @definitions = {}
       @values = {}
     end
 
     def reload(env)
       @values = {}
-      @required.each_value do |function|
+      @definitions.each_value do |function|
         @values.merge!(function.call(env))
       end
     end
 
-    def method_missing(name, *args)
+    def [](name)
       value = @values[name]
       if value.nil?
-        address = "<#{self.class.name}:0x00#{(self.object_id << 1).to_s(16)}>"
-        raise NoMethodError.new("undefined method `#{name}' for ##{address}")
+        raise NameError.new("No value available for #{name}")
       end
       value
     end
 
-    def require_string(name)
-      require_custom(name) do |env|
+    def required_string(name)
+      required_custom(name) do |env|
         if value = env[name.to_s.upcase]
           {name => value}
         else
@@ -32,8 +30,8 @@ module ConfigVar
       end
     end
 
-    def require_int(name)
-      require_custom(name) do |env|
+    def required_int(name)
+      required_custom(name) do |env|
         if value = env[name.to_s.upcase]
           {name => Integer(value)}
         else
@@ -42,8 +40,8 @@ module ConfigVar
       end
     end
 
-    def require_bool(name)
-      require_custom(name) do |env|
+    def required_bool(name)
+      required_custom(name) do |env|
         if value = env[name.to_s.upcase]
           if ['1', 'true'].include?(value.downcase)
             value = true
@@ -59,8 +57,49 @@ module ConfigVar
       end
     end
 
-    def require_custom(name, &blk)
-      @required[name] = blk
+    def required_custom(name, &blk)
+      @definitions[name] = blk
+    end
+
+    def optional_string(name, default)
+      optional_custom(name) do |env|
+        if value = env[name.to_s.upcase]
+          {name => value}
+        else
+          {name => default}
+        end
+      end
+    end
+
+    def optional_int(name, default)
+      optional_custom(name) do |env|
+        if value = env[name.to_s.upcase]
+          {name => Integer(value)}
+        else
+          {name => default}
+        end
+      end
+    end
+
+    def optional_bool(name, default)
+      optional_custom(name) do |env|
+        if value = env[name.to_s.upcase]
+          if ['1', 'true'].include?(value.downcase)
+            value = true
+          elsif ['0', 'false'].include?(value.downcase)
+            value = false
+          else
+            raise ArgumentError.new("#{value} is not a valid boolean")
+          end
+          {name => value}
+        else
+          {name => default}
+        end
+      end
+    end
+
+    def optional_custom(name, &blk)
+      @definitions[name] = blk
     end
   end
 end
