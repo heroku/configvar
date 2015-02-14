@@ -3,9 +3,10 @@ class ContextTest < Minitest::Test
   # requested.
   def test_index_unknown_value
     context = ConfigVar::Context.new
-    assert_raises NameError do
+    error = assert_raises NameError do
       context[:unknown]
     end
+    assert_equal('No value available for unknown', error.message)
   end
 
   # Context.reload loads required string values.
@@ -21,9 +22,10 @@ class ContextTest < Minitest::Test
   def test_reload_required_string_without_value
     context = ConfigVar::Context.new
     context.required_string :database_url
-    assert_raises ConfigVar::RequiredConfigError do
+    error = assert_raises ConfigVar::RequiredConfigError do
       context.reload({})
     end
+    assert_equal('A value must be provided for DATABASE_URL', error.message)
   end
 
   # Context.reload loads required integer values.
@@ -39,9 +41,11 @@ class ContextTest < Minitest::Test
   def test_reload_required_int_with_malformed_value
     context = ConfigVar::Context.new
     context.required_int :port
-    assert_raises ArgumentError do
+    error = assert_raises ArgumentError do
       context.reload('PORT' => 'eight zero 8 zero')
     end
+    assert_equal('eight zero 8 zero is not a valid boolean for PORT',
+                 error.message)
   end
 
   # Context.reload raises a RequiredConfigError if no value is provided for a
@@ -49,9 +53,10 @@ class ContextTest < Minitest::Test
   def test_reload_required_int_without_value
     context = ConfigVar::Context.new
     context.required_int :port
-    assert_raises ConfigVar::RequiredConfigError do
+    error = assert_raises ConfigVar::RequiredConfigError do
       context.reload({})
     end
+    assert_equal('A value must be provided for PORT', error.message)
   end
 
   # Context.reload loads required boolean values.
@@ -72,12 +77,13 @@ class ContextTest < Minitest::Test
   # Context.reload raises an ArgumentError if a non-bool value is provided for
   # a required boolean value.  Only case insensitive versions of '1', 'true',
   # '0' and 'false' are permitted.
-  def test_reload_required_int_with_malformed_value
+  def test_reload_required_bool_with_malformed_value
     context = ConfigVar::Context.new
     context.required_bool :value
-    assert_raises ArgumentError do
+    error = assert_raises ArgumentError do
       context.reload('VALUE' => 'malformed')
     end
+    assert_equal('malformed is not a valid boolean for VALUE', error.message)
   end
 
   # Context.reload raises a RequiredConfigError if no value is provided for a
@@ -85,9 +91,10 @@ class ContextTest < Minitest::Test
   def test_reload_required_bool_without_value
     context = ConfigVar::Context.new
     context.required_bool :value
-    assert_raises ConfigVar::RequiredConfigError do
+    error = assert_raises ConfigVar::RequiredConfigError do
       context.reload({})
     end
+    assert_equal('A value must be provided for VALUE', error.message)
   end
 
   # Context.reload makes all values returned from the custom block used to

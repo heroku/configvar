@@ -39,7 +39,7 @@ module ConfigVar
     def required_int(name)
       required_custom(name) do |env|
         if value = env[name.to_s.upcase]
-          {name => parse_int(value)}
+          {name => parse_int(name, value)}
         else
           raise RequiredConfigError.new(name)
         end
@@ -50,7 +50,7 @@ module ConfigVar
     def required_bool(name)
       required_custom(name) do |env|
         if value = env[name.to_s.upcase]
-          {name => parse_bool(value)}
+          {name => parse_bool(name, value)}
         else
           raise RequiredConfigError.new(name)
         end
@@ -81,7 +81,7 @@ module ConfigVar
     def optional_int(name, default)
       optional_custom(name) do |env|
         if value = env[name.to_s.upcase]
-          {name => parse_int(value)}
+          {name => parse_int(name, value)}
         else
           {name => default}
         end
@@ -92,7 +92,7 @@ module ConfigVar
     def optional_bool(name, default)
       optional_custom(name) do |env|
         if value = env[name.to_s.upcase]
-          {name => parse_bool(value)}
+          {name => parse_bool(name, value)}
         else
           {name => default}
         end
@@ -111,19 +111,21 @@ module ConfigVar
 
     # Convert a string to an integer.  An ArgumentError is raised if the
     # string is not a valid integer.
-    def parse_int(value)
+    def parse_int(name, value)
       Integer(value)
+    rescue ArgumentError
+      raise ArgumentError.new("#{value} is not a valid boolean for #{name.to_s.upcase}")
     end
 
     # Convert a string to boolean.  An ArgumentError is raised if the string
     # is not a valid boolean.
-    def parse_bool(value)
+    def parse_bool(name, value)
       if ['1', 'true'].include?(value.downcase)
         true
       elsif ['0', 'false'].include?(value.downcase)
         false
       else
-        raise ArgumentError.new("#{value} is not a valid boolean")
+        raise ArgumentError.new("#{value} is not a valid boolean for #{name.to_s.upcase}")
       end
     end
   end
