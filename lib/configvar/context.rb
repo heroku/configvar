@@ -14,7 +14,8 @@ module ConfigVar
     end
 
     # Fetch a configuration value.  The name must be a lowercase symbol
-    # matching an uppercase name defined in the environment.
+    # matching an uppercase name defined in the environment.  A NameError is
+    # raised if no value matching the specified name is available.
     def [](name)
       value = @values[name]
       if value.nil? && !@values.has_key?(name)
