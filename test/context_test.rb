@@ -164,6 +164,15 @@ class ContextTest < Minitest::Test
     assert_equal(true, context[:value_false])
   end
 
+  # Context.reload correctly handles a nil default value for an optional
+  # variable.
+  def test_reload_optional_value_with_nil_default
+    context = ConfigVar::Context.new
+    context.optional_int :port, nil
+    context.reload({})
+    assert_nil(context[:port])
+  end
+
   # Context.reload makes all values returned from the custom block used to
   # process a optional value available via the collection interface.
   def test_reload_optional_custom

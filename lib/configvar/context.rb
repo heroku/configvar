@@ -17,7 +17,7 @@ module ConfigVar
     # matching an uppercase name defined in the environment.
     def [](name)
       value = @values[name]
-      if value.nil?
+      if value.nil? && !@values.has_key?(name)
         raise NameError.new("No value available for #{name}")
       end
       value
