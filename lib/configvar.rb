@@ -1,8 +1,8 @@
 module ConfigVar
   def self.define(&blk)
     context = ConfigVar::Context.new
-    context.instance_eval(blk)
-    context.reload
+    context.instance_eval(&blk)
+    context.reload(ENV)
     context
   end
 end
