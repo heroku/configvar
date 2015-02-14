@@ -39,7 +39,7 @@ module ConfigVar
     def required_int(name)
       required_custom(name) do |env|
         if value = env[name.to_s.upcase]
-          {name => Integer(value)}
+          {name => parse_int(value)}
         else
           raise MissingConfig.new(name)
         end
@@ -50,14 +50,7 @@ module ConfigVar
     def required_bool(name)
       required_custom(name) do |env|
         if value = env[name.to_s.upcase]
-          if ['1', 'true'].include?(value.downcase)
-            value = true
-          elsif ['0', 'false'].include?(value.downcase)
-            value = false
-          else
-            raise ArgumentError.new("#{value} is not a valid boolean")
-          end
-          {name => value}
+          {name => parse_bool(value)}
         else
           raise MissingConfig.new(name)
         end
@@ -88,7 +81,7 @@ module ConfigVar
     def optional_int(name, default)
       optional_custom(name) do |env|
         if value = env[name.to_s.upcase]
-          {name => Integer(value)}
+          {name => parse_int(value)}
         else
           {name => default}
         end
@@ -99,14 +92,7 @@ module ConfigVar
     def optional_bool(name, default)
       optional_custom(name) do |env|
         if value = env[name.to_s.upcase]
-          if ['1', 'true'].include?(value.downcase)
-            value = true
-          elsif ['0', 'false'].include?(value.downcase)
-            value = false
-          else
-            raise ArgumentError.new("#{value} is not a valid boolean")
-          end
-          {name => value}
+          {name => parse_bool(value)}
         else
           {name => default}
         end
@@ -119,6 +105,26 @@ module ConfigVar
     # vars.
     def optional_custom(name, &blk)
       @definitions[name] = blk
+    end
+
+    private
+
+    # Convert a string to an integer.  An ArgumentError is raised if the
+    # string is not a valid integer.
+    def parse_int(value)
+      Integer(value)
+    end
+
+    # Convert a string to boolean.  An ArgumentError is raised if the string
+    # is not a valid boolean.
+    def parse_bool(value)
+      if ['1', 'true'].include?(value.downcase)
+        true
+      elsif ['0', 'false'].include?(value.downcase)
+        false
+      else
+        raise ArgumentError.new("#{value} is not a valid boolean")
+      end
     end
   end
 end
