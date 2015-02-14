@@ -22,14 +22,45 @@ module ConfigVar
       value
     end
 
-    def required_string(name)
-      @required[name] = lambda do |env|
-        if value = env[name]
+    def require_string(name)
+      require_custom(name) do |env|
+        if value = env[name.to_s.upcase]
           {name => value}
         else
           raise MissingConfig.new(name)
         end
       end
+    end
+
+    def require_int(name)
+      require_custom(name) do |env|
+        if value = env[name.to_s.upcase]
+          {name => Integer(value)}
+        else
+          raise MissingConfig.new(name)
+        end
+      end
+    end
+
+    def require_bool(name)
+      require_custom(name) do |env|
+        if value = env[name.to_s.upcase]
+          if ['1', 'true'].include?(value.downcase)
+            value = true
+          elsif ['0', 'false'].include?(value.downcase)
+            value = false
+          else
+            raise ArgumentError.new("#{value} is not a valid boolean")
+          end
+          {name => value}
+        else
+          raise MissingConfig.new(name)
+        end
+      end
+    end
+
+    def require_custom(name, &blk)
+      @required[name] = blk
     end
   end
 end

@@ -8,4 +8,5 @@ module ConfigVar
 end
 
 require 'configvar/context'
+require 'configvar/error'
 require 'configvar/version'
