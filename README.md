@@ -112,7 +112,7 @@ enabled = config[:enabled]
 A `NameError` exception is raised if an unknown configuration variable is
 accessed.
 
-## Reload configuration variables
+## Reloading configuration variables
 
 The configuration object can be reloaded at any time from a `Hash` containing
 environment variables.  For example, it's easy to load values from a file if
