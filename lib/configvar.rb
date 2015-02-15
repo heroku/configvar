@@ -4,8 +4,8 @@ module ConfigVar
   # a Hash with values available using lowercase symbols.  For example, a PORT
   # value from the environment can be accesses as config[:port] in the
   # returned object.  Booleans are only considered valid if they are one of
-  # '0', '1', 'true' or 'false'.  The values are case insensitive, so 'TRUE'
-  # is also a valid boolean.
+  # '0', '1', 'true' or 'false'.  The values are case insensitive, so 'TRUE',
+  # 'True' and 'TrUe' are all valid booleans.
   #
   # Example:
   #
