@@ -30,7 +30,7 @@ module ConfigVar
         if value = env[name.to_s.upcase]
           {name => value}
         else
-          raise RequiredConfigError.new(name)
+          raise ConfigError.new("A value must be provided for #{name.to_s.upcase}")
         end
       end
     end
@@ -41,7 +41,7 @@ module ConfigVar
         if value = env[name.to_s.upcase]
           {name => parse_int(name, value)}
         else
-          raise RequiredConfigError.new(name)
+          raise ConfigError.new("A value must be provided for #{name.to_s.upcase}")
         end
       end
     end
@@ -52,7 +52,7 @@ module ConfigVar
         if value = env[name.to_s.upcase]
           {name => parse_bool(name, value)}
         else
-          raise RequiredConfigError.new(name)
+          raise ConfigError.new("A value must be provided for #{name.to_s.upcase}")
         end
       end
     end
@@ -61,9 +61,9 @@ module ConfigVar
     # environment as a parameter, load and process values from the it, and
     # return a hash that will be merged into the collection of all config
     # vars.  If a required value is not found in the environment the block
-    # must raise a ConfigVar::RequiredConfigError exception.
+    # must raise a ConfigVar::ConfigError exception.
     def required_custom(name, &blk)
-      @definitions[name] = blk
+      define_config(name, &blk)
     end
 
     # Define a required string config var with a default value.
@@ -104,7 +104,7 @@ module ConfigVar
     # return a hash that will be merged into the collection of all config
     # vars.
     def optional_custom(name, &blk)
-      @definitions[name] = blk
+      define_config(name, &blk)
     end
 
     private
@@ -127,6 +127,14 @@ module ConfigVar
       else
         raise ArgumentError.new("#{value} is not a valid boolean for #{name.to_s.upcase}")
       end
+    end
+
+    # Define a handler for a configuration value.
+    def define_config(name, &blk)
+      if @definitions.has_key?(name)
+        raise ConfigError.new("#{name.to_s.upcase} is already registered")
+      end
+      @definitions[name] = blk
     end
   end
 end

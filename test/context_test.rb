@@ -17,12 +17,12 @@ class ContextTest < Minitest::Test
     assert_equal('postgres:///test', context[:database_url])
   end
 
-  # Context.reload raises a RequiredConfigError if no value is provided for a
-  # required string value.
+  # Context.reload raises a ConfigError if no value is provided for a required
+  # string value.
   def test_reload_required_string_without_value
     context = ConfigVar::Context.new
     context.required_string :database_url
-    error = assert_raises ConfigVar::RequiredConfigError do
+    error = assert_raises ConfigVar::ConfigError do
       context.reload({})
     end
     assert_equal('A value must be provided for DATABASE_URL', error.message)
@@ -48,12 +48,12 @@ class ContextTest < Minitest::Test
                  error.message)
   end
 
-  # Context.reload raises a RequiredConfigError if no value is provided for a
-  # required integer value.
+  # Context.reload raises a ConfigError if no value is provided for a required
+  # integer value.
   def test_reload_required_int_without_value
     context = ConfigVar::Context.new
     context.required_int :port
-    error = assert_raises ConfigVar::RequiredConfigError do
+    error = assert_raises ConfigVar::ConfigError do
       context.reload({})
     end
     assert_equal('A value must be provided for PORT', error.message)
@@ -86,12 +86,12 @@ class ContextTest < Minitest::Test
     assert_equal('malformed is not a valid boolean for VALUE', error.message)
   end
 
-  # Context.reload raises a RequiredConfigError if no value is provided for a
-  # required boolean value.
+  # Context.reload raises a ConfigError if no value is provided for a required
+  # boolean value.
   def test_reload_required_bool_without_value
     context = ConfigVar::Context.new
     context.required_bool :value
-    error = assert_raises ConfigVar::RequiredConfigError do
+    error = assert_raises ConfigVar::ConfigError do
       context.reload({})
     end
     assert_equal('A value must be provided for VALUE', error.message)
@@ -201,5 +201,16 @@ class ContextTest < Minitest::Test
     assert_equal(8081, context[:port])
     context.reload('PORT' => '9000')
     assert_equal(9000, context[:port])
+  end
+
+  # Context.required_* and Context.optional_* methods raise a ConfigError if
+  # the same name is defined twice.
+  def test_register_duplicate_config
+    context = ConfigVar::Context.new
+    context.required_int :port
+    error = assert_raises ConfigVar::ConfigError do
+      context.optional_int :port, 8080
+    end
+    assert_equal('PORT is already registered', error.message)
   end
 end
