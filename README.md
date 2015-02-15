@@ -67,7 +67,7 @@ config = ConfigVar.define do
       end
       {age: value}
     else
-      raise ConfigError.new(name)
+      raise ConfigVar::ConfigError.new(name)
     end
   end
 end
