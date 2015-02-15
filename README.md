@@ -115,10 +115,9 @@ accessed.
 ## Reloading configuration variables
 
 The configuration object can be reloaded at any time from a `Hash` containing
-environment variables.  For example, it's easy to load values from a file if
-desired.  `ConfigVar.define` will always initialize the `config` object from
-the environment, so you must define required variables before attempting to
-load from a file.
+environment variables.  For example, it's easy to load values from a file to
+refresh an already initialized configuration object.  `ConfigVar.define` will
+always initialize the `config` object from the environment.
 
 ```ruby
 config = ConfigVar.define do
