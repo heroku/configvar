@@ -8,8 +8,8 @@ require 'configvar/version'
 Gem::Specification.new do |spec|
   spec.name          = 'configvar'
   spec.version       = ConfigVar::VERSION
-  spec.authors       = ['jkakar']
-  spec.email         = ['jkakar@kakar.ca']
+  spec.authors       = ['jkakar', 'heroku']
+  spec.email         = ['jkakar@kakar.ca', 'opensource@heroku.com']
   spec.description   = 'Manage configuration loaded from the environment'
   spec.summary       = 'Manage configuration loaded from the environment'
   spec.homepage      = 'https://github.com/heroku/configvar'
