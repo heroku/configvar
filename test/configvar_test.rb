@@ -19,12 +19,11 @@ class ConfigVarTest < Minitest::Test
       optional_int     :age,       42
       optional_bool    :friendly,  true
     end
-    assert_equal('postgres:///example', config[:database_url])
-    assert_equal(8080, config[:port])
-    assert_equal(true, config[:enabled])
-    assert_equal('Bob', config[:name])
-    assert_equal(42, config[:age])
-    assert_equal(true, config[:friendly])
+    assert_equal('postgres:///example', config.database_url)
+    assert_equal(8080, config.port)
+    assert_equal(true, config.enabled)
+    assert_equal('Bob', config.name)
+    assert_equal(42, config.age)
+    assert_equal(true, config.friendly)
   end
 end
-

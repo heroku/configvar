@@ -13,13 +13,14 @@ module ConfigVar
       end
     end
 
-    # Fetch a configuration value.  The name must be a lowercase symbol
-    # matching an uppercase name defined in the environment.  A NameError is
-    # raised if no value matching the specified name is available.
-    def [](name)
+    # Fetch a configuration value.  The name must be a lowercase version of an
+    # uppercase name defined in the environment.  A NoMethodError is raised if
+    # no value matching the specified name is available.
+    def method_missing(name, *args)
       value = @values[name]
       if value.nil? && !@values.has_key?(name)
-        raise NameError.new("No value available for #{name}")
+        address = "<#{self.class.name}:0x00#{(self.object_id << 1).to_s(16)}>"
+        raise NoMethodError.new("undefined method `#{name}' for ##{address}")
       end
       value
     end

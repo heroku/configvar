@@ -104,12 +104,12 @@ config = ConfigVar.define do
   required_bool    :enabled
 end
 
-database_url = config[:database_url]
-port = config[:port]
-enabled = config[:enabled]
+database_url = config.database_url
+port = config.port
+enabled = config.enabled
 ```
 
-A `NameError` exception is raised if an unknown configuration variable is
+A `NoMethodError` exception is raised if an unknown configuration variable is
 accessed.
 
 ## Reloading configuration variables
