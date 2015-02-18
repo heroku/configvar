@@ -215,4 +215,49 @@ class ContextTest < Minitest::Test
     end
     assert_equal('PORT is already registered', error.message)
   end
+
+  # Context.required_uri parses URIs into their component parts.
+  def test_required_uri
+    context = ConfigVar::Context.new
+    context.required_uri :testing_url
+
+    url = 'http://username:password@example.com/testing'
+    context.reload('TESTING_URL' => url)
+
+    assert_equal('example.com', context.testing_url_host)
+    assert_equal('testing', context.testing_url_path)
+    assert_equal('http', context.testing_url_scheme)
+    assert_equal(url, context.testing_url)
+    assert_equal('username', context.testing_url_username)
+    assert_equal('password', context.testing_url_password)
+  end
+
+  # Context.require_uri parseis URIs into their component parts takes an
+  # optional prefix for the components.
+  def test_required_uri_with_prefix
+    context = ConfigVar::Context.new
+    context.required_uri :testing_url, 'prefix'
+
+    url = 'http://username:password@example.com/testing'
+    context.reload('TESTING_URL' => url)
+
+    assert_equal(url, context.testing_url)
+    assert_equal('example.com', context.prefix_host)
+    assert_equal('testing', context.prefix_path)
+    assert_equal('http', context.prefix_scheme)
+    assert_equal('username', context.prefix_username)
+    assert_equal('password', context.prefix_password)
+  end
+
+  # Context.required_uri throws an appropriate error if it's an invalid URI.
+  def test_required_uri_with_invalid_uri
+    context = ConfigVar::Context.new
+    context.required_uri :testing_url
+
+    url = 'http:\/#'
+    assert_raises ArgumentError do
+      context.reload('TESTING_URL' => url)
+    end
+  end
+
 end

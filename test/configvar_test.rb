@@ -9,6 +9,7 @@ class ConfigVarTest < Minitest::Test
   # values.
   def test_define
     set_env('DATABASE_URL', 'postgres:///example')
+    set_env('TESTING_URL', 'postgres://example.com/example')
     set_env('PORT', '8080')
     set_env('ENABLED', '1')
     config = ConfigVar.define do
@@ -18,12 +19,16 @@ class ConfigVarTest < Minitest::Test
       optional_string  :name,      'Bob'
       optional_int     :age,       42
       optional_bool    :friendly,  true
+      required_uri     :testing_url, 'testing'
     end
     assert_equal('postgres:///example', config.database_url)
     assert_equal(8080, config.port)
     assert_equal(true, config.enabled)
     assert_equal('Bob', config.name)
     assert_equal(42, config.age)
-    assert_equal(true, config.friendly)
+    assert(config.friendly)
+    assert_equal('postgres://example.com/example', config.testing_url)
+    assert_equal('example.com', config.testing_host)
+    assert_equal('example', config.testing_path)
   end
 end

@@ -1,3 +1,5 @@
+require "uri"
+
 module ConfigVar
   class Context
     def initialize
@@ -52,6 +54,20 @@ module ConfigVar
       required_custom(name) do |env|
         if value = env[name.to_s.upcase]
           {name => parse_bool(name, value)}
+        else
+          raise ConfigError.new("A value must be provided for #{name.to_s.upcase}")
+        end
+      end
+    end
+
+    # Define a required uri config var.
+    # Extracts the components of the URL into host, path, credentials.
+    # If a prefix is provided, the components are prefixed appropriately.
+    def required_uri(name, prefix=nil)
+      prefix ||= name
+      required_custom(name) do |env|
+        if value = env[name.to_s.upcase]
+          parse_uri(name, value, prefix)
         else
           raise ConfigError.new("A value must be provided for #{name.to_s.upcase}")
         end
@@ -128,6 +144,24 @@ module ConfigVar
       else
         raise ArgumentError.new("#{value} is not a valid boolean for #{name.to_s.upcase}")
       end
+    end
+
+    # Split a URI into its component parts.  An ArgumentError is raised if the string
+    # is not a valid URI.
+    def parse_uri(name, value, prefix)
+      uri = URI.parse(value)
+      keys = {name => value,
+              "#{prefix}_host".to_sym => uri.host,
+              "#{prefix}_path".to_sym => uri.path[1..-1],
+              "#{prefix}_scheme".to_sym => uri.scheme}
+      if uri.userinfo
+        username, password = uri.userinfo.split(/:/)
+        keys.merge!({"#{prefix}_username".to_sym => username,
+                     "#{prefix}_password".to_sym => password})
+      end
+      keys
+    rescue URI::InvalidURIError
+      raise ArgumentError.new("#{value} is not a valid url for #{name.to_s.upcase}")
     end
 
     # Define a handler for a configuration value.

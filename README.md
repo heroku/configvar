@@ -21,6 +21,7 @@ config = ConfigVar.define do
   required_string  :database_url
   required_int     :port
   required_bool    :enabled
+  required_uri     :testing
 end
 ```
 
