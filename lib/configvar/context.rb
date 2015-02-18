@@ -60,9 +60,10 @@ module ConfigVar
 
     # Define a required custom config var.  The block must take the
     # environment as a parameter, load and process values from the it, and
-    # return a hash that will be merged into the collection of all config
-    # vars.  If a required value is not found in the environment the block
-    # must raise a ConfigVar::ConfigError exception.
+    # return either a single value to bind to the name of the configuration
+    # variable or a `Hash` that will be merged into the collection of all
+    # config vars.  If a required value is not found in the environment the
+    # block must raise a ConfigVar::ConfigError exception.
     def required_custom(name, &blk)
       define_config(name, &blk)
     end
@@ -100,10 +101,11 @@ module ConfigVar
       end
     end
 
-    # Define a required custom config var.  The block must take the
+    # Define an optional custom config var.  The block must take the
     # environment as a parameter, load and process values from the it, and
-    # return a hash that will be merged into the collection of all config
-    # vars.
+    # return either a single value to bind to the name of the configuration
+    # variable or a `Hash` that will be merged into the collection of all
+    # config vars.
     def optional_custom(name, &blk)
       define_config(name, &blk)
     end
