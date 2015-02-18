@@ -135,7 +135,14 @@ module ConfigVar
       if @definitions.has_key?(name)
         raise ConfigError.new("#{name.to_s.upcase} is already registered")
       end
-      @definitions[name] = blk
+      @definitions[name] = Proc.new do |env|
+        value = yield env
+        if value.kind_of?(Hash)
+          value
+        else
+          {name => value}
+        end
+      end
     end
   end
 end

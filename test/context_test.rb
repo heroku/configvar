@@ -112,6 +112,17 @@ class ContextTest < Minitest::Test
     assert_equal(42, context.age)
   end
 
+  # Context.reload associates a single value returned from the custom block
+  # with the name specified in the configuration definition.
+  def test_reload_optional_custom_with_single_value
+    context = ConfigVar::Context.new
+    context.required_custom :name do |env|
+      'Bob'
+    end
+    context.reload({})
+    assert_equal('Bob', context.name)
+  end
+
   # Context.reload loads optional string values.
   def test_reload_optional_string
     context = ConfigVar::Context.new
@@ -193,6 +204,17 @@ class ContextTest < Minitest::Test
     assert_equal('Hello', context.greeting)
     assert_equal('Bob', context.name)
     assert_equal(42, context.age)
+  end
+
+  # Context.reload associates a single value returned from the custom block
+  # with the name specified in the configuration definition.
+  def test_reload_optional_custom_with_single_value
+    context = ConfigVar::Context.new
+    context.optional_custom :name do |env|
+      'Bob'
+    end
+    context.reload({})
+    assert_equal('Bob', context.name)
   end
 
   # Context.reload reinitialized loaded values from the provided environment.
