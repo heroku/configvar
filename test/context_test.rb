@@ -228,8 +228,7 @@ class ContextTest < Minitest::Test
     assert_equal('testing', context.testing_url_path)
     assert_equal('http', context.testing_url_scheme)
     assert_equal(url, context.testing_url)
-    assert_equal('username', context.testing_url_username)
-    assert_equal('password', context.testing_url_password)
+    assert_equal('username:password', context.testing_url_credentials)
   end
 
   # Context.require_uri parseis URIs into their component parts takes an
@@ -245,8 +244,7 @@ class ContextTest < Minitest::Test
     assert_equal('example.com', context.prefix_host)
     assert_equal('testing', context.prefix_path)
     assert_equal('http', context.prefix_scheme)
-    assert_equal('username', context.prefix_username)
-    assert_equal('password', context.prefix_password)
+    assert_equal('username:password', context.prefix_credentials)
   end
 
   # Context.required_uri throws an appropriate error if it's an invalid URI.

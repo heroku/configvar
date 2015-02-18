@@ -155,9 +155,7 @@ module ConfigVar
               "#{prefix}_path".to_sym => uri.path[1..-1],
               "#{prefix}_scheme".to_sym => uri.scheme}
       if uri.userinfo
-        username, password = uri.userinfo.split(/:/)
-        keys.merge!({"#{prefix}_username".to_sym => username,
-                     "#{prefix}_password".to_sym => password})
+        keys.merge!({"#{prefix}_credentials".to_sym => uri.userinfo})
       end
       keys
     rescue URI::InvalidURIError
