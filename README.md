@@ -1,4 +1,4 @@
-[![Build Status](https://magnum.travis-ci.com/heroku/configvar.svg?token=uNxDxTYyzRaxPpJGQ5yq)](https://magnum.travis-ci.com/heroku/configvar)
+[![Build Status](https://travis-ci.org/heroku/configvar.svg?branch=master)](https://travis-ci.org/heroku/configvar)
 
 # ConfigVar
 
@@ -52,10 +52,8 @@ When simple string, integer and boolean values aren't sufficient you can
 provide a block to process values from the environment according to your
 needs.  For example, if you want to load a required integer that must always
 be 0 or greater you can provide a custom block to do the required validation.
-It must take the environment to load values from and return a `Hash` of values
-to include in the loaded configuration.  The block should raise a
-`ConfigVar::ConfigError` or `ArgumentError` exception if a required value is
-missing or if any loaded value is invalid, respectively.
+It must take the environment to load values from and return a value to include
+in the loaded configuration.
 
 ```ruby
 config = ConfigVar.define do
@@ -65,7 +63,7 @@ config = ConfigVar.define do
       if value < 0
         raise ArgumentError.new("#{value} for AGE must be a 0 or greater")
       end
-      {age: value}
+      value
     else
       raise ConfigVar::ConfigError.new(name)
     end
@@ -73,10 +71,10 @@ config = ConfigVar.define do
 end
 ```
 
-Custom functions can return multiple key/value pairs and all of them will be
-included in the loaded configuration.  For example, if you want to extract
-parts of a URL and make them available as individual configuration variables
-you can provide a custom block to do so:
+Custom functions can return multiple key/value pairs in a `Hash` and all of
+them will be included in the loaded configuration.  For example, if you want
+to extract parts of a URL and make them available as individual configuration
+variables you can provide a custom block to do so:
 
 ```ruby
 config = ConfigVar.define do
