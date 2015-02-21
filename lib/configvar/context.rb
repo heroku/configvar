@@ -2,27 +2,18 @@ module ConfigVar
   class Context
     def initialize
       @definitions = {}
-      @values = {}
     end
 
     # Reload the environment from a Hash of available environment values.
     def reload(env)
-      @values = {}
       @definitions.each_value do |function|
-        @values.merge!(function.call(env))
+        function.call(env).each do |name, value|
+          if value.is_a?(String)
+            value = "\"#{value}\""
+          end
+          instance_eval "def #{name}; #{value}; end", __FILE__, __LINE__
+        end
       end
-    end
-
-    # Fetch a configuration value.  The name must be a lowercase version of an
-    # uppercase name defined in the environment.  A NoMethodError is raised if
-    # no value matching the specified name is available.
-    def method_missing(name, *args)
-      value = @values[name]
-      if value.nil? && !@values.has_key?(name)
-        address = "<#{self.class.name}:0x00#{(self.object_id << 1).to_s(16)}>"
-        raise NoMethodError.new("undefined method `#{name}' for ##{address}")
-      end
-      value
     end
 
     # Define a required string config var.

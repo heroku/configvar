@@ -2,13 +2,9 @@ class ContextTest < Minitest::Test
   # Context.<name> raises a NoMethodError if an unknown configuration value is
   # requested.
   def test_index_unknown_value
-    context = ConfigVar::Context.new
-    error = assert_raises NoMethodError do
-      context.unknown
+    assert_raises NoMethodError do
+      ConfigVar::Context.new.unknown
     end
-    assert_match(
-      /undefined method `unknown' for #<ConfigVar::Context:0x[0-9a-f]*>/,
-      error.message)
   end
 
   # Context.reload loads required string values.
