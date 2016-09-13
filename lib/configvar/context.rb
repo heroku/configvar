@@ -123,7 +123,7 @@ module ConfigVar
     # Convert a string to boolean.  An ArgumentError is raised if the string
     # is not a valid boolean.
     def parse_bool(name, value)
-      if ['1', 'true'].include?(value.downcase)
+      if ['1', 'true', 'enabled'].include?(value.downcase)
         true
       elsif ['0', 'false'].include?(value.downcase)
         false
