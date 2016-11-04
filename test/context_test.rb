@@ -66,12 +66,14 @@ class ContextTest < Minitest::Test
     context = ConfigVar::Context.new
     context.required_bool :value_1
     context.required_bool :value_true
+    context.required_bool :value_enabled
     context.required_bool :value_0
     context.required_bool :value_false
-    context.reload('VALUE_1' => '1', 'VALUE_TRUE' => 'True',
+    context.reload('VALUE_1' => '1', 'VALUE_TRUE' => 'True', 'VALUE_ENABLED' => 'enabled',
                    'VALUE_0' => '0', 'VALUE_FALSE' => 'False')
     assert_equal(true, context.value_1)
     assert_equal(true, context.value_true)
+    assert_equal(true, context.value_enabled)
     assert_equal(false, context.value_0)
     assert_equal(false, context.value_false)
   end
@@ -160,12 +162,14 @@ class ContextTest < Minitest::Test
     context = ConfigVar::Context.new
     context.optional_bool :value_1, false
     context.optional_bool :value_true, false
+    context.optional_bool :value_enabled, false
     context.optional_bool :value_0, true
     context.optional_bool :value_false, true
-    context.reload('VALUE_1' => '1', 'VALUE_TRUE' => 'True',
+    context.reload('VALUE_1' => '1', 'VALUE_TRUE' => 'True', 'VALUE_ENABLED' => 'enabled',
                    'VALUE_0' => '0', 'VALUE_FALSE' => 'False')
     assert_equal(true, context.value_1)
     assert_equal(true, context.value_true)
+    assert_equal(true, context.value_enabled)
     assert_equal(false, context.value_0)
     assert_equal(false, context.value_false)
   end
