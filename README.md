@@ -127,3 +127,8 @@ end
 env = load_values_from_file('my.config')
 config.reload(env)
 ```
+
+## Publishing a gem
+
+Bump the version of configvar in `lib/configvar/version.rb` and then run `rake
+release` to publish a new gem on Rubygems.
