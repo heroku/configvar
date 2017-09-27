@@ -241,4 +241,19 @@ class ContextTest < Minitest::Test
     end
     assert_equal('PORT is already registered', error.message)
   end
+
+  def test_required_custom_with_error_still_defines_method_that_raises
+    context = ConfigVar::Context.new
+    context.required_custom :foo do |env|
+      raise ConfigVar::ConfigError
+    end
+
+    assert_raises ConfigVar::ConfigError do
+      context.reload({})
+    end
+
+    assert_raises ConfigVar::ConfigError do
+      context.foo
+    end
+  end
 end

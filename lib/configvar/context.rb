@@ -9,7 +9,13 @@ module ConfigVar
     def reload(env)
       @values = {}
       @definitions.each_value do |function|
-        @values.merge!(function.call(env))
+        val = function.call(env)
+        @values.merge!(val)
+
+        # still raise if we hit something that returns an error
+        if val.values[0].is_a? Proc
+          val.values[0].call()
+        end
       end
     end
 
@@ -22,7 +28,12 @@ module ConfigVar
         address = "<#{self.class.name}:0x00#{(self.object_id << 1).to_s(16)}>"
         raise NoMethodError.new("undefined method `#{name}' for ##{address}")
       end
-      value
+
+      if value.is_a? Proc
+        value.call()
+      else
+        value
+      end
     end
 
     # Define a required string config var.
@@ -138,11 +149,15 @@ module ConfigVar
         raise ConfigError.new("#{name.to_s.upcase} is already registered")
       end
       @definitions[name] = Proc.new do |env|
-        value = yield env
-        if value.kind_of?(Hash)
-          value
-        else
-          {name => value}
+        begin
+          value = yield env
+          if value.kind_of?(Hash)
+            value
+          else
+            {name => value}
+          end
+        rescue ConfigError => e
+          { name => Proc.new { raise e } }
         end
       end
     end
